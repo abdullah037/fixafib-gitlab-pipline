@@ -1,0 +1,87 @@
+sudo su
+apt update
+curl -fsSL https://test.docker.com -o test-docker.sh
+sh test-docker.sh
+docker pull node:16.16.0
+docker run -itd --name fe node:16.16.0
+docker exec -it fe bash
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+apt-get install gitlab-runner
+npm install -g npm@8.15.1
+npm install -g @angular/cli@14.2.0  
+apt install awscli
+
+//register aws credentials
+aws configure
+=======================================================
+//gitlab-runner-error solving (use the following command)
+
+gitlab-runner start 
+
+sudo gitlab-runner run 
+
+gitlab-runner run 
+=======================================================7
+
+Accomplishment:
+
+I had completed deployment of fixAfib.
+Me and hassan tested it out by creating patient.
+Following is the link of website.
+
+
+
+
+
+=========================================
+
+//pipeline code
+
+build-job:
+  stage: build
+  tags:
+    - fe
+  script:
+    - ng v
+    - npm i --force
+    - ng build
+    - aws s3 cp /home/gitlab-runner/builds/bQ3jUV-g/0/fix-afib/fixafib-frontend/dist/testapp s3://fixafibsamplefrontendbucket/ --recursive
+
+============================================================================================================================================
+
+////install nvm node npm
+
+sudo apt install curl
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+source ~/.bashrc
+nvm --version
+nvm install 10.15.2
+nvm use 8.11.1
+
+
+
+
+============================================================================================================================================
+/////pstgress
+
+
+apt-get install lsb-release -y
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql-10
+==========================================================================================
+///posgress conection
+
+ psql "host=mystack-databaseinstance-lacgvfribowp.cxjkvwi7odqi.us-east-1.rds.amazonaws.com port=5432 dbname=TEST user=Testadmin password=admin123"
+================================================================================================
+/////
+src/app/modules/account/login.html
+===========================================
+///remaining pipeline
+
+    - npm i --force
+    - ng build
+    - aws s3 cp /builds/36FZ4WFz/0/fix-afib/fixafib-frontend/dist/testapp s3://fixafibsamplefrontendbucket/ --recursive
+=======================================================
+http://d17d1juq5rgmjx.cloudfront.net

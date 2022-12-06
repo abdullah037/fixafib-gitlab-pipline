@@ -1,0 +1,272 @@
+Policy for Abdullah
+
+Policy#1: Ec2 policy  (AmazonEC2FullAccess)
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "ec2:*",
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "elasticloadbalancing:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "cloudwatch:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "autoscaling:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:AWSServiceName": [
+                        "autoscaling.amazonaws.com",
+                        "ec2scheduled.amazonaws.com",
+                        "elasticloadbalancing.amazonaws.com",
+                        "spot.amazonaws.com",
+                        "spotfleet.amazonaws.com",
+                        "transitgateway.amazonaws.com"
+                    ]
+                }
+            }
+        }
+    ]
+}
+
+
+Policy#2: RDS policy
+
+{
+   "Version": "2012-10-17",
+   "Statement": [
+      {
+         "Sid": "AllowCreateDBInstanceOnly",
+         "Effect": "Allow",
+         "Action": [
+            "rds:CreateDBInstance"
+         ],
+         "Resource": [
+            "arn:aws:rds:*:123456789012:db:test*",
+            "arn:aws:rds:*:123456789012:og:default*",
+            "arn:aws:rds:*:123456789012:pg:default*",
+            "arn:aws:rds:*:123456789012:subgrp:default"
+         ],
+         "Condition": {
+            "StringEquals": {
+               "rds:DatabaseEngine": "postgres",
+               "rds:DatabaseClass": "db.t2.micro"
+            }
+         }
+      }
+   ]
+}
+
+Policy#3: CloudFrontFullAccess
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Action": [
+                "acm:ListCertificates",
+                "cloudfront:*",
+                "iam:ListServerCertificates",
+                "waf:ListWebACLs",
+                "waf:GetWebACL",
+                "wafv2:ListWebACLs",
+                "wafv2:GetWebACL",
+                "kinesis:ListStreams"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Action": [
+                "kinesis:DescribeStream"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:kinesis:*:*:*"
+        },
+        {
+            "Action": [
+                "iam:ListRoles"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:iam::*:*"
+        }
+    ]
+}
+
+Policy#4: AWSDeepRacerCloudFormationAccessPolicy
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AllocateAddress",
+                "ec2:AttachInternetGateway",
+                "ec2:AssociateRouteTable",
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateInternetGateway",
+                "ec2:CreateNatGateway",
+                "ec2:CreateNetworkAcl",
+                "ec2:CreateNetworkAclEntry",
+                "ec2:CreateRoute",
+                "ec2:CreateRouteTable",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateSubnet",
+                "ec2:CreateTags",
+                "ec2:CreateVpc",
+                "ec2:CreateVpcEndpoint",
+                "ec2:DeleteInternetGateway",
+                "ec2:DeleteNatGateway",
+                "ec2:DeleteNetworkAcl",
+                "ec2:DeleteNetworkAclEntry",
+                "ec2:DeleteRoute",
+                "ec2:DeleteRouteTable",
+                "ec2:DeleteSecurityGroup",
+                "ec2:DeleteSubnet",
+                "ec2:DeleteTags",
+                "ec2:DeleteVpc",
+                "ec2:DeleteVpcEndpoints",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeNatGateways",
+                "ec2:DescribeNetworkAcls",
+                "ec2:DescribeRouteTables",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags",
+                "ec2:DescribeVpcEndpoints",
+                "ec2:DescribeVpcs",
+                "ec2:DetachInternetGateway",
+                "ec2:DisassociateRouteTable",
+                "ec2:ModifySubnetAttribute",
+                "ec2:ModifyVpcAttribute",
+                "ec2:ReleaseAddress",
+                "ec2:ReplaceNetworkAclAssociation",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": "arn:aws:iam::*:role/service-role/AWSDeepRacerLambdaAccessRole",
+            "Condition": {
+                "StringLikeIfExists": {
+                    "iam:PassedToService": "lambda.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:CreateFunction",
+                "lambda:GetFunction",
+                "lambda:DeleteFunction",
+                "lambda:TagResource",
+                "lambda:UpdateFunctionCode"
+            ],
+            "Resource": [
+                "arn:aws:lambda:*:*:function:*DeepRacer*",
+                "arn:aws:lambda:*:*:function:*Deepracer*",
+                "arn:aws:lambda:*:*:function:*deepracer*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutBucketPolicy",
+                "s3:CreateBucket",
+                "s3:ListBucket",
+                "s3:GetBucketAcl",
+                "s3:DeleteBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::*DeepRacer*",
+                "arn:aws:s3:::*Deepracer*",
+                "arn:aws:s3:::*deepracer*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "robomaker:CreateSimulationApplication",
+                "robomaker:CreateSimulationApplicationVersion",
+                "robomaker:DeleteSimulationApplication",
+                "robomaker:DescribeSimulationApplication",
+                "robomaker:ListSimulationApplications",
+                "robomaker:TagResource",
+                "robomaker:UpdateSimulationApplication"
+            ],
+            "Resource": [
+                "arn:aws:robomaker:*:*:/createSimulationApplication",
+                "arn:aws:robomaker:*:*:simulation-application/deepracer*"
+            ]
+        }
+    ]
+}
+
+policy#5: s3 full access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+
+///////(POLICY ARNS)//////////
+
+#ec2
+arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+#Rds
+arn:aws:iam::aws:policy/AmazonRDSFullAccess
+
+#Cloudfront
+arn:aws:iam::aws:policy/CloudFrontFullAccess
+
+#AWSDeepRacerCloudFormationAccessPolicy
+
+#s3 full access

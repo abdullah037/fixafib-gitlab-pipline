@@ -1,0 +1,49 @@
+///Frontend Pipeline///////
+
+build-job:
+  stage: build
+  tags:
+    - fe-r
+  script:
+    - ng v
+    - npm i --force
+    - ng build
+
+deploy-job:
+  stage: deploy
+  tags:
+    - fe-r
+  script:
+    - aws s3 cp /home/gitlab-runner/builds/4wsPeY2U/0/fix-afib/fixafib-frontend/dist/testapp s3://fixafibsamplefrontendbucket/ --recursive
+=========================================================================================================================
+
+/////backend pipeline////////
+
+stages:
+  - deploy
+
+Deploy: 
+  stage: deploy
+  tags:
+    - be-r
+  before_script:
+  - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan $EC2_IPADDRESS >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  script:
+    - npm -v
+    - mkdir .backend
+    - npm i --force
+    - cp -r * .backend
+    - mv .backend backend
+    - zip -r backend.zip backend
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.234.190.133 "sudo rm -rf backend.zip"
+    - scp -o StrictHostKeyChecking=no backend.zip ubuntu@18.234.190.133:/home/ubuntu
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.234.190.133 "cd /home/ubuntu"
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.234.190.133 "sudo rm -rf backend"
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.234.190.133 "unzip -o backend.zip"
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.234.190.133 "cd /home/ubuntu/backend"
